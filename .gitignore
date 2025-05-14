@@ -1,3 +1,45 @@
+# Node.js (React frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.parcel-cache/
+frontend/build/  # just in case
+
+# Python
 venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+.env
+.env.*
+
+# PyInstaller
+*.spec
+build/
+dist/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS/Linux extra
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+*.cache/
+*.bak
+
+# Windows
+*.exe
+*.dll
+*.manifest
+*.tmp
