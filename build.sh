@@ -33,6 +33,6 @@ pip install pyinstaller pywebview PyQt5 PyQtWebEngine qtpy flask
 
 # Step 4: Run PyInstaller
 echo "🛠️ Packaging with PyInstaller..."
-pyinstaller --onfile "$SPEC_FILE"
+pyinstaller --onefile "$SPEC_FILE"
 
 echo "✅ Build complete. Executable located at: dist/clinical-trial-dashboard/"
