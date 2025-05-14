@@ -3,11 +3,17 @@ import webview
 import platform
 import importlib.util
 from backend.app import app
+import socket
 
+def get_free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(('', 0))
+        return s.getsockname()[1]
+
+flask_port = get_free_port()
 
 def start_flask():
-    app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False)
-
+    app.run(host='127.0.0.1', port=flask_port)
 
 def detect_gui_backend():
     system = platform.system()
@@ -42,5 +48,5 @@ if __name__ == '__main__':
     gui_backend = detect_gui_backend()
     print(f"🖼️ Using GUI backend: {gui_backend or 'default'}")
 
-    webview.create_window("React + Flask App", "http://127.0.0.1:5000")
-    webview.start(gui=gui_backend, debug=True)
+    webview.create_window("Clinical Trial Dashboard", f"http://127.0.0.1:{flask_port}")    
+    webview.start(gui=gui_backend)

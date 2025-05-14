@@ -1,38 +1,25 @@
 #!/bin/bash
 
-set -e
+set -e  # Exit immediately if any command fails
 
-# Paths
-FRONTEND_DIR="./frontend"
-FRONTEND_BUILD_DIR="$FRONTEND_DIR/dist"
-VENV_DIR="./venv"
-ENTRY_SCRIPT="main.py"
-SPEC_FILE="main.spec"
+# Activate virtual environment
+if [ ! -d "venv" ]; then
+  echo "❌ Virtual environment not found. Run: python -m venv venv && source venv/bin/activate"
+  exit 1
+fi
 
-echo "🔧 Starting full build..."
+source venv/bin/activate
 
-# Step 1: Build React frontend
-echo "📦 Building React frontend..."
-cd "$FRONTEND_DIR"
+echo "📦 Installing Python dependencies..."
+pip install -r requirements.txt
+
+echo "📦 Installing frontend dependencies and building React app..."
+cd frontend
 npm install
 npm run build
 cd ..
 
-# Step 2: Activate Python virtual environment
-if [ ! -d "$VENV_DIR" ]; then
-  echo "❗ Virtual environment not found. Creating one..."
-  python -m venv "$VENV_DIR"
-fi
+echo "🛠 Building executable with PyInstaller..."
+pyinstaller main.spec
 
-source "$VENV_DIR/bin/activate"
-
-# Step 3: Install Python dependencies
-echo "🐍 Installing Python dependencies..."
-pip install --upgrade pip
-pip install pyinstaller pywebview PyQt5 PyQtWebEngine qtpy flask
-
-# Step 4: Run PyInstaller
-echo "🛠️ Packaging with PyInstaller..."
-pyinstaller --onefile "$SPEC_FILE"
-
-echo "✅ Build complete. Executable located at: dist/clinical-trial-dashboard/"
+echo "✅ Build complete! Executable is in: dist/"

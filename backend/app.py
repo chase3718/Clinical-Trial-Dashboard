@@ -1,17 +1,19 @@
-from flask import Flask, send_from_directory
 import os
+import sys
+from flask import Flask, send_from_directory
 
-app = Flask(__name__, static_folder='../frontend/dist')
+app = Flask(__name__, static_folder=None)
 
-@app.route('/api/hello')
-def hello():
-    return {'message': 'Hello from Flask!'}
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_react(path):
-    full_path = os.path.join(app.static_folder, path)
-    if path != "" and os.path.exists(full_path):
-        return send_from_directory(app.static_folder, path)
+def get_frontend_path():
+    if hasattr(sys, '_MEIPASS'):
+        # Running from PyInstaller onefile bundle
+        return os.path.join(sys._MEIPASS, 'frontend/dist')
     else:
-        return send_from_directory(app.static_folder, 'index.html')
+        # Development / normal run
+        return os.path.abspath('frontend/dist')
+
+@app.route('/')
+@app.route('/<path:path>')
+def serve_react(path='index.html'):
+    frontend_path = get_frontend_path()
+    return send_from_directory(frontend_path, path)
