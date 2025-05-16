@@ -1,12 +1,16 @@
 #!/bin/bash
 
-set -e  # Exit immediately if any command fails
+# set -e  # Exit immediately if any command fails
 
 # Activate virtual environment
 if [ ! -d "venv" ]; then
-  echo "❌ Virtual environment not found. Run: python -m venv venv && source venv/bin/activate"
-  exit 1
+#   echo "❌ Virtual environment not found. Run: python -m venv venv && source venv/bin/activate"
+  echo "📦 Virtual environment not found. Setting up venv"
+  python -m venv venv
+#   exit 1
 fi
+
+
 
 source venv/bin/activate
 

@@ -16,7 +16,6 @@ __pycache__/
 .env.*
 
 # PyInstaller
-*.spec
 build/
 dist/
 *.log
