@@ -1,7 +1,9 @@
+import Header from './components/header';
+
 function App() {
 	return (
 		<>
-			<h1>Welcome to the App</h1>
+			<Header />
 		</>
 	);
 }

@@ -24,6 +24,6 @@ npm run build
 cd ..
 
 echo "🛠 Building executable with PyInstaller..."
-pyinstaller main.spec
+pyinstaller --onefile --name=ClinicalDashboard --add-data=frontend/dist:frontend/dist main.py
 
 echo "✅ Build complete! Executable is in: dist/"
