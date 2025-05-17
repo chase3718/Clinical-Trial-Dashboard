@@ -33,7 +33,7 @@ pip install pyinstaller pywebview PyQt5 PyQtWebEngine qtpy flask
 
 REM Step 5: Run PyInstaller
 echo 🛠️ Packaging with PyInstaller...
-pyinstaller %SPEC_FILE%
+pyinstaller --onefile --name=ClinicalDashboard --add-data=frontend/dist:frontend/dist main.py
 
 echo ✅ Build complete. Executable located at: dist\clinical-trial-dashboard\
 
