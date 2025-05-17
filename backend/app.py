@@ -6,10 +6,16 @@ import sqlite3
 from flask import Flask, send_from_directory, request
 
 app = Flask(__name__, static_folder=None)
+app.config['UPLOAD_FOLDER'] = 'uploads'
 
-upload_folder = os.path.join(os.path.dirname(__file__), 'uploads')
+if hasattr(sys, '_MEIPASS'):
+    base_dir = sys._MEIPASS
+else:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+upload_folder = os.path.join(base_dir, 'uploads')
 if not os.path.exists(upload_folder):
-        os.makedirs(upload_folder)
+    os.makedirs(upload_folder)
 
 DB_NAME = 'database.db'
 
