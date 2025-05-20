@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import GridLayout, { WidthProvider } from 'react-grid-layout';
 import SpeedDial from '../components/speedDial';
 import Widget from '../components/widget';
@@ -7,35 +7,42 @@ const ResponsiveGridLayout = WidthProvider(GridLayout);
 
 export default function Dashboard({ data }) {
 	const [widgets, setWidgets] = useState([]);
-	// Derive layout from widgets
-	const layout = widgets.map((widget) => widget.layout);
+	const layout = useMemo(() => widgets.map((widget) => widget.layout), [widgets]);
 
-	// Called by react-grid-layout on drag/resize/position change
-	const onLayoutChange = (newLayout) => {
-		// Map layout positions back to widgets by id
+	const onLayoutChange = useCallback((newLayout) => {
 		setWidgets((prevWidgets) =>
 			prevWidgets.map((widget) => {
 				const layoutItem = newLayout.find((item) => item.i === widget.id);
-				return layoutItem ? { ...widget, layout: { ...layoutItem } } : widget;
+				if (layoutItem && JSON.stringify(widget.layout) !== JSON.stringify(layoutItem)) {
+					return { ...widget, layout: { ...layoutItem } };
+				}
+				return widget;
 			})
 		);
-	};
+	}, []);
 
-	const addWidget = (widgetConfig) => {
-		const id = String(Date.now());
+	const addWidget = useCallback((widgetConfig) => {
+		const id =
+			typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
 		const layout = {
 			...(widgetConfig.layout || { x: 0, y: 0, w: 3, h: 2 }),
 			i: id,
 		};
-		setWidgets([
-			...widgets,
+		setWidgets((prevWidgets) => [
+			...prevWidgets,
 			{
 				...widgetConfig,
 				id,
 				layout,
 			},
 		]);
-	};
+	}, []);
+
+	const handleUpdateWidget = useCallback((id, updatedConfig) => {
+		setWidgets((prevWidgets) =>
+			prevWidgets.map((widget) => (widget.id === id ? { ...widget, ...updatedConfig } : widget))
+		);
+	}, []);
 
 	return (
 		<div className="w-full h-full">
@@ -50,10 +57,15 @@ export default function Dashboard({ data }) {
 				compactType="vertical"
 				preventCollision={false}
 				onLayoutChange={onLayoutChange}
+				draggableHandle=".drag-handle"
 			>
 				{widgets.map((widget) => (
 					<div key={widget.id}>
-						<Widget widget={widget} data={data} />
+						<Widget
+							widget={widget}
+							data={data}
+							onUpdate={(updatedConfig) => handleUpdateWidget(widget.id, updatedConfig)}
+						/>
 					</div>
 				))}
 			</ResponsiveGridLayout>
