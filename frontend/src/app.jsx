@@ -15,8 +15,8 @@ function App() {
 		<FullscreenDropzone>
 			<div className="flex h-screen w-screen flex-row overflow-hidden bg-base-100">
 				<Sidebar />
-				{/* <Dashboard /> */}
-				<DataTable data={data} />
+				<Dashboard data={data} />
+				{/* <DataTable data={data} /> */}
 			</div>
 		</FullscreenDropzone>
 	);
