@@ -4,7 +4,7 @@ import './app.css';
 import Dashboard from './pages/dashboard';
 import FullscreenDropzone from './components/fullscreenDropzone';
 import Sidebar from './components/sidebar';
-import DataTable from './pages/dataTable';
+import DataTable from './pages/clinicalDataTable';
 
 import DATA from './temp/data.js';
 import { useState } from 'react';
