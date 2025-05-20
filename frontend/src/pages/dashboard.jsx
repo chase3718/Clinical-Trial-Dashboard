@@ -1,97 +1,63 @@
-import React, { memo, useState } from 'react';
+import { useState } from 'react';
 import GridLayout, { WidthProvider } from 'react-grid-layout';
-import DashboardChart from '../components/dashboardChart'; // <-- import the new component
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
-const MemoDashboardChart = memo(DashboardChart);
-// Your widgets config, now supporting all types!
-const widgetsConfig = [
-	{
-		id: 'enrollmentProgress',
-		title: 'Enrollment Progress by Study',
-		chartType: 'bar',
-		layout: { x: 0, y: 0, w: 6, h: 8 },
-		dataKeys: [
-			{ key: 'currentEnrollment', name: 'Current Enrollment' },
-			{ key: 'enrollmentTarget', name: 'Target Enrollment' },
-		],
-		xAxisKey: 'studyId',
-	},
-	{
-		id: 'statusCountBar',
-		title: 'Trials by Status (Bar)',
-		chartType: 'bar',
-		layout: { x: 6, y: 0, w: 6, h: 8 },
-		groupBy: 'status',
-		barLabel: 'Trials',
-	},
-	{
-		id: 'statusCountPie',
-		title: 'Trials by Status (Pie)',
-		chartType: 'pie',
-		layout: { x: 0, y: 8, w: 6, h: 8 },
-		groupBy: 'status',
-	},
-	{
-		id: 'enrollmentLine',
-		title: 'Enrollment Target vs Current (Line)',
-		chartType: 'line',
-		layout: { x: 6, y: 8, w: 6, h: 8 },
-		dataKeys: [
-			{ key: 'currentEnrollment', name: 'Current Enrollment' },
-			{ key: 'enrollmentTarget', name: 'Target Enrollment' },
-		],
-		xAxisKey: 'studyId',
-	},
-	// Add more widgets as needed!
-];
+import SpeedDial from '../components/speedDial';
+import Widget from '../components/widget';
 
 const ResponsiveGridLayout = WidthProvider(GridLayout);
 
 export default function Dashboard({ data }) {
-	const defaultLayout = widgetsConfig.map((w) => ({
-		i: w.id,
-		...w.layout,
-	}));
+	const [widgets, setWidgets] = useState([]);
+	// Derive layout from widgets
+	const layout = widgets.map((widget) => widget.layout);
 
-	const [layout, setLayout] = useState(() => {
-		const saved = localStorage.getItem('dashboard-layout');
-		return saved ? JSON.parse(saved) : defaultLayout;
-	});
+	// Called by react-grid-layout on drag/resize/position change
+	const onLayoutChange = (newLayout) => {
+		// Map layout positions back to widgets by id
+		setWidgets((prevWidgets) =>
+			prevWidgets.map((widget) => {
+				const layoutItem = newLayout.find((item) => item.i === widget.id);
+				return layoutItem ? { ...widget, layout: { ...layoutItem } } : widget;
+			})
+		);
+	};
 
-	const handleLayoutChange = (newLayout) => {
-		setLayout(newLayout);
-		localStorage.setItem('dashboard-layout', JSON.stringify(newLayout));
+	const addWidget = (widgetConfig) => {
+		const id = String(Date.now());
+		const layout = {
+			...(widgetConfig.layout || { x: 0, y: 0, w: 3, h: 2 }),
+			i: id,
+		};
+		setWidgets([
+			...widgets,
+			{
+				...widgetConfig,
+				id,
+				layout,
+			},
+		]);
 	};
 
 	return (
-		<div className="w-full h-[90vh] min-h-0">
+		<div className="w-full h-full">
 			<ResponsiveGridLayout
 				className="layout"
-				layout={layout}
 				cols={12}
 				rowHeight={40}
-				onLayoutChange={handleLayoutChange}
-				draggableHandle=".chart-drag-handle"
-				isResizable={true}
-				autoSize={true}
-				useCSSTransforms={true}
+				isResizable
+				autoSize
+				layout={layout}
+				useCSSTransforms
 				compactType="vertical"
 				preventCollision={false}
+				onLayoutChange={onLayoutChange}
 			>
-				{widgetsConfig.map((widget) => (
+				{widgets.map((widget) => (
 					<div key={widget.id}>
-						<div className="chart-drag-handle cursor-move h-full">
-							<div className="bg-base-200 rounded-xl shadow-md p-2 h-full flex flex-col">
-								<h3 className="font-bold mb-2">{widget.title}</h3>
-								<div className="flex-1 min-h-0">
-									<MemoDashboardChart widget={widget} data={data} />
-								</div>
-							</div>
-						</div>
+						<Widget widget={widget} data={data} />
 					</div>
 				))}
 			</ResponsiveGridLayout>
+			<SpeedDial addWidget={addWidget} />
 		</div>
 	);
 }

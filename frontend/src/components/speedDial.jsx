@@ -1,13 +1,22 @@
 import { useState } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaShare } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaShare, FaChartPie } from 'react-icons/fa';
 
-export default function SpeedDial() {
+const defaultWidgetConfigs = {
+	pie: {
+		id: 'New Pie Chart',
+		title: 'New Pie Chart',
+		chartType: 'pie',
+		layout: { x: 0, y: Infinity, w: 6, h: 8 },
+		dataKey: 'status',
+		nameKey: 'status',
+	},
+};
+
+export default function SpeedDial({ addWidget }) {
 	const [open, setOpen] = useState(false);
 
 	const actions = [
-		{ icon: <FaEdit />, name: 'Edit', onClick: () => alert('Edit clicked!') },
-		{ icon: <FaTrash />, name: 'Delete', onClick: () => alert('Delete clicked!') },
-		{ icon: <FaShare />, name: 'Share', onClick: () => alert('Share clicked!') },
+		{ icon: <FaChartPie />, name: 'Add Pie Chart', onClick: () => addWidget(defaultWidgetConfigs['pie']) },
 	];
 
 	return (
@@ -18,7 +27,7 @@ export default function SpeedDial() {
 					open ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-4'
 				}`}
 			>
-				{actions.map((action, idx) => (
+				{actions.map((action) => (
 					<button
 						key={action.name}
 						onClick={() => {
