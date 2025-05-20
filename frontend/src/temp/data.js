@@ -1,4 +1,4 @@
-const data = [
+const DATA = [
 	{
 		studyId: 'CT-001',
 		title: 'Evaluation of Drug X for Treatment of Rheumatoid Arthritis',
@@ -5501,4 +5501,4 @@ const data = [
 	},
 ];
 
-export default data;
+export default DATA;

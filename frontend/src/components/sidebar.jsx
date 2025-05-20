@@ -3,14 +3,14 @@ import { FaHouse } from 'react-icons/fa6';
 
 export default function Sidebar() {
 	return (
-		<aside class="h-screen sticky top-0 overflow-y-auto w-60 py-6 px-2 bg-base-200">
-			<a class="btn btn-ghost">
-				{/* <img alt="Logo" src="/daisy-components/logo.svg" class="w-6" /> */}
+		<aside className="h-screen sticky top-0 overflow-y-auto w-60 py-6 px-2 bg-base-200 min-w-[240px] z-0">
+			<a className="btn btn-ghost">
+				{/* <img alt="Logo" src="/daisy-components/logo.svg" className="w-6" /> */}
 				<h2>Clinical Trial Dashboard</h2>
 			</a>
 
-			<ul class="menu px-0">
-				<li class="menu-title">Analytics</li>
+			<ul className="menu px-0">
+				<li className="menu-title">Analytics</li>
 				<li>
 					<a>
 						<FaHouse />

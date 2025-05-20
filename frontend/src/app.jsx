@@ -6,12 +6,14 @@ import FullscreenDropzone from './components/fullscreenDropzone';
 import Sidebar from './components/sidebar';
 import DataTable from './pages/dataTable';
 
-import data from './temp/data.js';
+import DATA from './temp/data.js';
+import { useState } from 'react';
 
 function App() {
+	const [data, setData] = useState(() => DATA);
 	return (
 		<FullscreenDropzone>
-			<div className="flex h-screen w-screen flex-row">
+			<div className="flex h-screen w-screen flex-row overflow-hidden bg-base-100">
 				<Sidebar />
 				{/* <Dashboard /> */}
 				<DataTable data={data} />
