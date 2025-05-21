@@ -22,6 +22,7 @@ import {
 	PolarAngleAxis,
 	PolarRadiusAxis,
 	Radar,
+	Brush,
 } from 'recharts';
 
 // The same default colors you use elsewhere
@@ -64,7 +65,10 @@ export function PieRenderer({ pieData }) {
 }
 
 // BAR
-export function BarRenderer({ chartData, xKey, yKey }) {
+export function BarRenderer({ chartData, xKey, yKeys }) {
+	// yKeys: array of field names to stack
+	if (!yKeys || yKeys.length === 0) return null;
+
 	return (
 		<ResponsiveContainer width="100%" height="100%">
 			<BarChart data={chartData}>
@@ -73,13 +77,21 @@ export function BarRenderer({ chartData, xKey, yKey }) {
 				<YAxis />
 				<Tooltip />
 				<Legend />
-				<Bar dataKey={yKey || 'frequency'} fill={DEFAULT_COLORS[0]} />
+				{yKeys.map((yKey, idx) => (
+					<Bar
+						key={yKey}
+						dataKey={yKey}
+						stackId="stack"
+						fill={DEFAULT_COLORS[idx % DEFAULT_COLORS.length]}
+						name={yKey}
+					/>
+				))}
+				<Brush dataKey={xKey} height={20} stroke={DEFAULT_COLORS[0]} />
 			</BarChart>
 		</ResponsiveContainer>
 	);
 }
 
-// LINE
 export function LineRenderer({ chartData, xKey, yKey }) {
 	const tooManyDots = chartData.length > 20;
 	return (
@@ -97,12 +109,13 @@ export function LineRenderer({ chartData, xKey, yKey }) {
 					dot={tooManyDots ? false : true}
 					activeDot={tooManyDots ? false : { r: 7 }}
 				/>
+				<Brush dataKey={xKey} height={20} stroke={DEFAULT_COLORS[1]} />
 			</LineChart>
 		</ResponsiveContainer>
 	);
 }
 
-// AREA
+//AREA
 export function AreaRenderer({ chartData, xKey, yKey }) {
 	const tooManyDots = chartData.length > 20;
 	return (
@@ -121,6 +134,7 @@ export function AreaRenderer({ chartData, xKey, yKey }) {
 					dot={tooManyDots ? false : true}
 					activeDot={tooManyDots ? false : { r: 7 }}
 				/>
+				<Brush dataKey={xKey} height={20} stroke={DEFAULT_COLORS[2]} />
 			</AreaChart>
 		</ResponsiveContainer>
 	);

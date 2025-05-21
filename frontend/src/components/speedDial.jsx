@@ -16,7 +16,7 @@ const defaultWidgetConfigs = {
 		chartType: 'bar',
 		layout: { x: 0, y: Infinity, w: 3, h: 8 },
 		xKey: '',
-		yKey: '',
+		yKeys: [],
 		mergeDuplicates: true,
 	},
 	line: {

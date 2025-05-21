@@ -7,7 +7,7 @@ import {
 	sortDataByX,
 	hasValidConfig,
 } from './configUtils';
-import { PieRenderer, BarRenderer, LineRenderer, AreaRenderer, ScatterRenderer, RadarRenderer } from './renderers';
+import { AreaRenderer, BarRenderer, LineRenderer, PieRenderer, RadarRenderer, ScatterRenderer } from './renderers';
 import ChartSkeleton from './chartSkeleton';
 
 const RENDERERS = {
@@ -52,7 +52,32 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 		switch (chartType) {
 			case 'pie':
 				return <PieRenderer pieData={preparePieData(data, config.groupKey, config.valueKey)} />;
-			case 'bar':
+			case 'bar': {
+				let chartData;
+				let yKeys =
+					Array.isArray(config.yKeys) && config.yKeys.length > 0 ? config.yKeys : config.yKey ? [config.yKey] : [];
+
+				if (yKeys.length === 0) {
+					chartData = prepareFrequencyData(data, config.xKey);
+					yKeys = ['frequency'];
+				} else if (config.mergeDuplicates) {
+					// Merge/stack data for each selected yKey
+					chartData = [];
+					const groups = {};
+					data.forEach((item) => {
+						const xVal = item[config.xKey];
+						if (!groups[xVal]) groups[xVal] = { [config.xKey]: xVal };
+						yKeys.forEach((yKey) => {
+							groups[xVal][yKey] = (groups[xVal][yKey] || 0) + (item[yKey] || 0);
+						});
+					});
+					chartData = Object.values(groups);
+				} else {
+					chartData = data;
+				}
+				chartData = sortDataByX(chartData, config.xKey);
+				return <BarRenderer chartData={chartData} xKey={config.xKey} yKeys={yKeys} />;
+			}
 			case 'line':
 			case 'area': {
 				let chartData;
@@ -170,7 +195,57 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 								</label>
 							</>
 						)}
-						{['bar', 'line', 'area'].includes(localConfig.chartType) && (
+						{localConfig.chartType === 'bar' && (
+							<>
+								<label className="flex flex-col text-sm">
+									<span>X Axis (Category)</span>
+									<select
+										className="select select-sm select-bordered"
+										value={localConfig.xKey || ''}
+										onChange={(e) => setLocalConfig({ ...localConfig, xKey: e.target.value })}
+									>
+										<option value="">--Select--</option>
+										{dataKeys.map((key) => (
+											<option key={key} value={key}>
+												{key}
+											</option>
+										))}
+									</select>
+								</label>
+								<label className="flex flex-col text-sm">
+									<span>Y Axis Fields (Stacked Bars)</span>
+									<select
+										className="select select-sm select-bordered"
+										multiple
+										value={localConfig.yKeys || []}
+										onChange={(e) => {
+											const selected = Array.from(e.target.selectedOptions, (opt) => opt.value);
+											setLocalConfig({ ...localConfig, yKeys: selected });
+										}}
+										style={{ minHeight: '4rem' }}
+									>
+										{numericKeys.map((key) => (
+											<option key={key} value={key}>
+												{key}
+											</option>
+										))}
+									</select>
+									<span className="text-xs mt-1 text-base-content/60">
+										Select one or more numeric fields to stack. If none selected, chart will show frequency.
+									</span>
+								</label>
+								<label className="flex items-center gap-2">
+									<input
+										type="checkbox"
+										className="checkbox checkbox-sm"
+										checked={!!localConfig.mergeDuplicates}
+										onChange={(e) => setLocalConfig({ ...localConfig, mergeDuplicates: e.target.checked })}
+									/>
+									<span className="text-sm">Merge duplicate X values</span>
+								</label>
+							</>
+						)}
+						{['line', 'area'].includes(localConfig.chartType) && (
 							<>
 								<label className="flex flex-col text-sm">
 									<span>X Axis (Category)</span>
