@@ -1,11 +1,20 @@
 import { useState } from 'react';
-import { FaPlus, FaChartPie, FaChartBar, FaChartLine, FaChartArea, FaDotCircle, FaBullseye } from 'react-icons/fa';
+import {
+	FaPlus,
+	FaChartPie,
+	FaChartBar,
+	FaChartLine,
+	FaChartArea,
+	FaDotCircle,
+	FaBullseye,
+	FaAlignLeft,
+} from 'react-icons/fa';
 
 const defaultWidgetConfigs = {
 	pie: {
 		id: 'New Pie Chart',
 		title: 'New Pie Chart',
-		chartType: 'pie',
+		widgetType: 'pie',
 		layout: { x: 0, y: Infinity, w: 3, h: 8 },
 		groupKey: '',
 		valueKey: '',
@@ -13,7 +22,7 @@ const defaultWidgetConfigs = {
 	bar: {
 		id: 'New Bar Chart',
 		title: 'New Bar Chart',
-		chartType: 'bar',
+		widgetType: 'bar',
 		layout: { x: 0, y: Infinity, w: 3, h: 8 },
 		xKey: '',
 		yKeys: [],
@@ -22,7 +31,7 @@ const defaultWidgetConfigs = {
 	line: {
 		id: 'New Line Chart',
 		title: 'New Line Chart',
-		chartType: 'line',
+		widgetType: 'line',
 		layout: { x: 0, y: Infinity, w: 3, h: 8 },
 		xKey: '',
 		yKey: '',
@@ -31,7 +40,7 @@ const defaultWidgetConfigs = {
 	area: {
 		id: 'New Area Chart',
 		title: 'New Area Chart',
-		chartType: 'area',
+		widgetType: 'area',
 		layout: { x: 0, y: Infinity, w: 3, h: 8 },
 		xKey: '',
 		yKey: '',
@@ -40,7 +49,7 @@ const defaultWidgetConfigs = {
 	scatter: {
 		id: 'New Scatter Chart',
 		title: 'New Scatter Chart',
-		chartType: 'scatter',
+		widgetType: 'scatter',
 		layout: { x: 0, y: Infinity, w: 3, h: 8 },
 		xKey: '',
 		yKey: '',
@@ -48,10 +57,16 @@ const defaultWidgetConfigs = {
 	radar: {
 		id: 'New Radar Chart',
 		title: 'New Radar Chart',
-		chartType: 'radar',
+		widgetType: 'radar',
 		layout: { x: 0, y: Infinity, w: 3, h: 8 },
 		xKey: '',
 		yKey: '',
+	},
+	text: {
+		header: 'Text Header',
+		body: 'This is an example of a text widget. You can add any information here!',
+		widgetType: 'text',
+		layout: { x: 0, y: Infinity, w: 4, h: 4 },
 	},
 };
 
@@ -88,6 +103,11 @@ export default function SpeedDial({ addWidget }) {
 			icon: <FaBullseye />,
 			name: 'Add Radar Chart',
 			onClick: () => addWidget({ ...defaultWidgetConfigs.radar, id: String(Date.now()) }),
+		},
+		{
+			icon: <FaAlignLeft />,
+			name: 'Add Text Widget',
+			onClick: () => addWidget(defaultWidgetConfigs['text']),
 		},
 	];
 

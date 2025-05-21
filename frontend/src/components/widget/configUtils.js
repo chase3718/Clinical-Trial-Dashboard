@@ -72,6 +72,8 @@ export function hasValidConfig(chartType, config, data) {
 			return !!config.xKey;
 		case 'scatter':
 			return !!config.xKey && !!config.yKey;
+		case 'text':
+			return !!config.body;
 		default:
 			return false;
 	}

@@ -171,3 +171,14 @@ export function RadarRenderer({ radarData, xKey, yKey }) {
 		</ResponsiveContainer>
 	);
 }
+
+export function TextRenderer({ header, body }) {
+	return (
+		<div className="w-full h-full flex flex-col items-center justify-center px-4 py-4 text-base-content">
+			{header && (
+				<div className="text-xl font-semibold mb-2 text-base-content/90 text-center leading-tight">{header}</div>
+			)}
+			{body && <div className="text-base text-base-content/70 whitespace-pre-line text-center">{body}</div>}
+		</div>
+	);
+}

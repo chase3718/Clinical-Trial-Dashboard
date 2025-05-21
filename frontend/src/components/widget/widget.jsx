@@ -7,7 +7,15 @@ import {
 	sortDataByX,
 	hasValidConfig,
 } from './configUtils';
-import { AreaRenderer, BarRenderer, LineRenderer, PieRenderer, RadarRenderer, ScatterRenderer } from './renderers';
+import {
+	AreaRenderer,
+	BarRenderer,
+	LineRenderer,
+	PieRenderer,
+	RadarRenderer,
+	ScatterRenderer,
+	TextRenderer,
+} from './renderers';
 import ChartSkeleton from './chartSkeleton';
 
 const RENDERERS = {
@@ -17,6 +25,7 @@ const RENDERERS = {
 	area: AreaRenderer,
 	scatter: ScatterRenderer,
 	radar: RadarRenderer,
+	text: TextRenderer,
 };
 
 export default function Widget({ widget, data, onUpdate, onDelete }) {
@@ -42,14 +51,16 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 	);
 
 	const renderChart = (config) => {
-		const chartType = config?.chartType;
-		if (!hasValidConfig(chartType, config, data)) {
-			return <ChartSkeleton chartType={chartType} />;
+		const widgetType = config?.widgetType;
+		if (!hasValidConfig(widgetType, config, data)) {
+			return <ChartSkeleton widgetType={widgetType} />;
 		}
-		const Renderer = RENDERERS[chartType];
+		const Renderer = RENDERERS[widgetType];
 		if (!Renderer) return <ChartSkeleton />;
 
-		switch (chartType) {
+		console.log('type', widgetType);
+
+		switch (widgetType) {
 			case 'pie':
 				return <PieRenderer pieData={preparePieData(data, config.groupKey, config.valueKey)} />;
 			case 'bar': {
@@ -83,7 +94,7 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 				let chartData;
 				if (!config.yKey) {
 					chartData = prepareFrequencyData(data, config.xKey);
-				} else if (config.mergeDuplicates && chartType !== 'radar') {
+				} else if (config.mergeDuplicates && widgetType !== 'radar') {
 					chartData = prepareBarGroupedData(data, config.xKey, config.yKey);
 				} else {
 					chartData = data;
@@ -97,8 +108,12 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 				const radarData = prepareBarGroupedData(data, config.xKey, config.yKey);
 				return <RadarRenderer radarData={radarData} xKey={config.xKey} yKey={config.yKey} />;
 			}
+			case 'text': {
+				console.log('render');
+				return <TextRenderer header={config.header} body={config.body} />;
+			}
 			default:
-				return <ChartSkeleton chartType={chartType} />;
+				return <ChartSkeleton widgetType={widgetType} />;
 		}
 	};
 
@@ -147,8 +162,8 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 							<span>Chart Type</span>
 							<select
 								className="select select-sm select-bordered"
-								value={localConfig.chartType}
-								onChange={(e) => setLocalConfig({ ...localConfig, chartType: e.target.value })}
+								value={localConfig.widgetType}
+								onChange={(e) => setLocalConfig({ ...localConfig, widgetType: e.target.value })}
 							>
 								<option value="pie">Pie</option>
 								<option value="bar">Bar</option>
@@ -156,9 +171,10 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 								<option value="area">Area</option>
 								<option value="scatter">Scatter</option>
 								<option value="radar">Radar</option>
+								<option value="text">Text</option>
 							</select>
 						</label>
-						{localConfig.chartType === 'pie' && (
+						{localConfig.widgetType === 'pie' && (
 							<>
 								<label className="flex flex-col text-sm">
 									<span>Group By (Category, e.g. status or phase)</span>
@@ -195,7 +211,7 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 								</label>
 							</>
 						)}
-						{localConfig.chartType === 'bar' && (
+						{localConfig.widgetType === 'bar' && (
 							<>
 								<label className="flex flex-col text-sm">
 									<span>X Axis (Category)</span>
@@ -245,7 +261,7 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 								</label>
 							</>
 						)}
-						{['line', 'area'].includes(localConfig.chartType) && (
+						{['line', 'area'].includes(localConfig.widgetType) && (
 							<>
 								<label className="flex flex-col text-sm">
 									<span>X Axis (Category)</span>
@@ -291,7 +307,7 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 								</label>
 							</>
 						)}
-						{localConfig.chartType === 'scatter' && (
+						{localConfig.widgetType === 'scatter' && (
 							<>
 								<label className="flex flex-col text-sm">
 									<span>X Axis (Numeric)</span>
@@ -325,7 +341,7 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 								</label>
 							</>
 						)}
-						{localConfig.chartType === 'radar' && (
+						{localConfig.widgetType === 'radar' && (
 							<>
 								<label className="flex flex-col text-sm">
 									<span>Category (X Axis, string)</span>
@@ -359,6 +375,31 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 								</label>
 							</>
 						)}
+						{localConfig.widgetType === 'text' && (
+							<>
+								<label className="flex flex-col text-sm mb-2">
+									<span>Header</span>
+									<input
+										type="text"
+										className="input input-sm input-bordered"
+										value={localConfig.header || ''}
+										onChange={(e) => setLocalConfig({ ...localConfig, header: e.target.value })}
+										placeholder="Enter header/title"
+									/>
+								</label>
+								<label className="flex flex-col text-sm">
+									<span>Body</span>
+									<textarea
+										className="textarea textarea-sm textarea-bordered min-h-[60px]"
+										value={localConfig.body || ''}
+										onChange={(e) => setLocalConfig({ ...localConfig, body: e.target.value })}
+										placeholder="Enter text body"
+										rows={4}
+									/>
+								</label>
+							</>
+						)}
+
 						<div className="flex gap-2 mt-2">
 							<button className="btn btn-xs btn-primary" onClick={handleSave} title="Save">
 								<FaCheck />
@@ -369,7 +410,11 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 						</div>
 					</div>
 				) : (
-					<div className="flex-1 min-h-0">{widget?.chartType ? renderChart(widget) : <ChartSkeleton />}</div>
+					<div className="flex-1 min-h-0">
+						{/* {widget?.widgetType ? renderChart(widget) : <ChartSkeleton />} */}
+						{renderChart(widget)}
+						{console.log(widget)}
+					</div>
 				)}
 			</div>
 		</div>
