@@ -5,3 +5,14 @@
     width: 100vw;
     height: 100vh;
 }
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%)
+    }
+}
+
+.animate-\[shimmer_1\.5s_linear_infinite\] {
+    animation: shimmer 1.5s linear infinite;
+    transform: translateX(-100%);
+}

@@ -120,16 +120,6 @@ const DATA = [
 		plannedEndDate: '10/20/2025',
 	},
 	{
-		studyId: 'CT-013',
-		title: 'Vaccine Efficacy Against Emerging Viral Variant',
-		phase: 'Phase 3',
-		status: 'Completed',
-		enrollmentTarget: 2000,
-		currentEnrollment: 2000,
-		startDate: '12/01/2022',
-		plannedEndDate: '07/09/2025',
-	},
-	{
 		studyId: 'CT-014',
 		title: 'Microbiome Therapy for Digestive Disorders',
 		phase: 'Phase 2',
