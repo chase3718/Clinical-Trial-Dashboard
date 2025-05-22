@@ -5,6 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "concurrently \"vite\" \"../start-backend.sh\"",
+		"dev:frontend": "vite",
+		"dev:backend": "../start-backend.sh",
 		"build": "vite build",
 		"lint": "eslint .",
 		"preview": "vite preview"
