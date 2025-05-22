@@ -59,6 +59,8 @@ async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db
 def list_uploaded_files(db: Session = Depends(get_db)):
     files = db.query(FileRecord).all()
     # Return a list of dicts with id and displayname for each file
+    if not files:
+        raise HTTPException(status_code=404, detail="No files found.")
     return [
         {"id": file.id, "displayname": file.displayname}
         for file in files

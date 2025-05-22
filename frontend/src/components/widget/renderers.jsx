@@ -25,7 +25,7 @@ import {
 	Brush,
 } from 'recharts';
 
-// The same default colors you use elsewhere
+// Default colors
 export const DEFAULT_COLORS = [
 	'#8884d8',
 	'#82ca9d',
@@ -39,6 +39,25 @@ export const DEFAULT_COLORS = [
 	'#60d394',
 	'#ee6055',
 ];
+
+// ===== Date Helpers =====
+function isDateString(value) {
+	if (typeof value !== 'string') return false;
+	// Accepts YYYY-MM-DD, MM/DD/YYYY, or any ISO string (with or without time)
+	// The easiest robust way is just to try new Date(value) and see if it's valid and string contains at least 8 digits (for YYYYMMDD)
+	const date = new Date(value);
+	return !isNaN(date) && /\d{4}-\d{2}-\d{2}/.test(value);
+}
+
+function formatDate(value) {
+	if (!value) return '';
+	const date = new Date(value);
+	if (isNaN(date)) return value;
+	const mm = String(date.getMonth() + 1).padStart(2, '0');
+	const dd = String(date.getDate()).padStart(2, '0');
+	const yyyy = date.getFullYear();
+	return `${mm}/${dd}/${yyyy}`;
+}
 
 // PIE
 export function PieRenderer({ pieData }) {
@@ -66,16 +85,17 @@ export function PieRenderer({ pieData }) {
 
 // BAR
 export function BarRenderer({ chartData, xKey, yKeys }) {
-	// yKeys: array of field names to stack
 	if (!yKeys || yKeys.length === 0) return null;
+	const firstValue = chartData?.[0]?.[xKey];
+	const isDate = isDateString(firstValue);
 
 	return (
 		<ResponsiveContainer width="100%" height="100%">
 			<BarChart data={chartData}>
 				<CartesianGrid strokeDasharray="3 3" />
-				<XAxis dataKey={xKey} />
+				<XAxis dataKey={xKey} tickFormatter={isDate ? formatDate : undefined} />
 				<YAxis />
-				<Tooltip />
+				<Tooltip labelFormatter={isDate ? formatDate : undefined} />
 				<Legend />
 				{yKeys.map((yKey, idx) => (
 					<Bar
@@ -92,15 +112,19 @@ export function BarRenderer({ chartData, xKey, yKeys }) {
 	);
 }
 
+// LINE
 export function LineRenderer({ chartData, xKey, yKey }) {
 	const tooManyDots = chartData.length > 20;
+	const firstValue = chartData?.[0]?.[xKey];
+	const isDate = isDateString(firstValue);
+
 	return (
 		<ResponsiveContainer width="100%" height="100%">
 			<LineChart data={chartData}>
 				<CartesianGrid strokeDasharray="3 3" />
-				<XAxis dataKey={xKey} />
+				<XAxis dataKey={xKey} tickFormatter={isDate ? formatDate : undefined} />
 				<YAxis />
-				<Tooltip />
+				<Tooltip labelFormatter={isDate ? formatDate : undefined} />
 				<Legend />
 				<Line
 					type="monotone"
@@ -115,16 +139,19 @@ export function LineRenderer({ chartData, xKey, yKey }) {
 	);
 }
 
-//AREA
+// AREA
 export function AreaRenderer({ chartData, xKey, yKey }) {
 	const tooManyDots = chartData.length > 20;
+	const firstValue = chartData?.[0]?.[xKey];
+	const isDate = isDateString(firstValue);
+
 	return (
 		<ResponsiveContainer width="100%" height="100%">
 			<AreaChart data={chartData}>
 				<CartesianGrid strokeDasharray="3 3" />
-				<XAxis dataKey={xKey} />
+				<XAxis dataKey={xKey} tickFormatter={isDate ? formatDate : undefined} />
 				<YAxis />
-				<Tooltip />
+				<Tooltip labelFormatter={isDate ? formatDate : undefined} />
 				<Legend />
 				<Area
 					type="monotone"

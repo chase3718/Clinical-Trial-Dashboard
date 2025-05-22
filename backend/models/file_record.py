@@ -11,4 +11,4 @@ class FileRecord(Base):
     id = Column(Integer, primary_key=True, index=True)
     filename = Column(String, unique=True, index=True)
     displayname = Column(String, unique=False, index=False)
-    upload_time = Column(DateTime, default=utcnow)
+    upload_time = Column(String, unique=False, index=False)

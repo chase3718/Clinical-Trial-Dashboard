@@ -61,7 +61,7 @@ export function sortDataByX(data, xKey) {
 
 // Is there enough config/data to render a real chart?
 export function hasValidConfig(chartType, config, data) {
-	if (!data || data.length === 0) return false;
+	if (!chartType === 'text' && (!data || data.length === 0)) return false;
 	switch (chartType) {
 		case 'pie':
 			return !!config.groupKey;
@@ -73,7 +73,7 @@ export function hasValidConfig(chartType, config, data) {
 		case 'scatter':
 			return !!config.xKey && !!config.yKey;
 		case 'text':
-			return !!config.body;
+			return true;
 		default:
 			return false;
 	}
