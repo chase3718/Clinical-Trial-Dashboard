@@ -1,45 +1,40 @@
-# Node.js (React frontend)
-frontend/node_modules/
-frontend/dist/
-frontend/.env
-frontend/.parcel-cache/
-frontend/build/  # just in case
-
-# Python
-venv/
+# === Python / FastAPI ===
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-.env
+*.py[cod]
+*.sqlite3
+*.db
+*.log
+*.env
 .env.*
 
-# PyInstaller
-*.spec
-build/
-dist/
-*.log
+# Virtual environments
+venv/
+env/
+.venv/
 
-# OS
+# VS Code
+.vscode/
+
+# === Node / Vite / React ===
+node_modules/
+dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.*
+
+# === Build artifacts ===
+*.egg-info/
+build/
+frontend/build/
+
+# === Docker ===
+*.pid
+*.tar
+docker-compose.override.yml
+
+# === System ===
 .DS_Store
 Thumbs.db
 
-# IDE/editor configs
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# macOS/Linux extra
-*.egg-info/
-.eggs/
-pip-wheel-metadata/
-*.cache/
-*.bak
-
-# Windows
-*.exe
-*.dll
-*.manifest
-*.tmp
+# === Uploads / Generated Data ===
+backend/uploaded_files/

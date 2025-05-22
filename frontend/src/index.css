@@ -1,4 +1,2 @@
-@import 'tailwindcss';
-@plugin "daisyui" {
-	themes: corporate --default, business --prefersdark, retro;
-}
+@import "tailwindcss";
+@plugin "daisyui";
