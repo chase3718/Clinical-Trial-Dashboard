@@ -516,10 +516,10 @@ export default function ClinicalDataTable({ data }) {
 											width: header.getSize(),
 											minWidth: header.column.columnDef.minSize,
 											maxWidth: header.column.columnDef.maxSize,
-											position: 'sticky',
-											top: 0,
-											zIndex: 10,
-											background: 'rgba(245,245,245,0.98)',
+										// 	position: 'sticky',
+										// 	top: 0,
+										// 	zIndex: 10,
+										// 	background: 'rgba(245,245,245,0.98)',
 										}}
 										className={`
 											bg-base-200 border-b border-base-300 sticky top-0 z-10 shadow font-medium text-sm px-4 py-2 group
