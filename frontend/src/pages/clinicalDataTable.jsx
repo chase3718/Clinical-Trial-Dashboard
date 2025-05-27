@@ -4,6 +4,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { FaExclamationTriangle, FaFilter } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { format } from 'date-fns';
 
 const statusStyles = {
 	Completed: 'badge badge-success',
@@ -395,21 +396,31 @@ export default function ClinicalDataTable({ data }) {
 				},
 			},
 			{
-				accessorKey: 'startDate',
-				header: 'Start Date',
-				size: 130,
-				minSize: 100,
-				maxSize: 180,
-				sortingFn: (rowA, rowB, columnId) => dateSortFn(rowA, rowB, columnId),
-			},
-			{
-				accessorKey: 'plannedEndDate',
-				header: 'Planned End Date',
-				size: 150,
-				minSize: 100,
-				maxSize: 200,
-				sortingFn: (rowA, rowB, columnId) => dateSortFn(rowA, rowB, columnId),
-			},
+            accessorKey: 'startDate',
+            header: 'Start Date',
+            size: 130,
+            minSize: 100,
+            maxSize: 180,
+            sortingFn: (rowA, rowB, columnId) => dateSortFn(rowA, rowB, columnId),
+            cell: ({ getValue }) => {
+                const value = getValue();
+                const date = parseDateString(value);
+                return date ? format(date, 'MM/dd/yyyy') : '';
+            },
+        },
+        {
+            accessorKey: 'plannedEndDate',
+            header: 'Planned End Date',
+            size: 150,
+            minSize: 100,
+            maxSize: 200,
+            sortingFn: (rowA, rowB, columnId) => dateSortFn(rowA, rowB, columnId),
+            cell: ({ getValue }) => {
+                const value = getValue();
+                const date = parseDateString(value);
+                return date ? format(date, 'MM/dd/yyyy') : '';
+            },
+        },
 		],
 		[]
 	);
