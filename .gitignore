@@ -23,9 +23,11 @@ frontend/.env
 frontend/.env.*
 
 # === Build artifacts ===
+*.spec
 *.egg-info/
 build/
 frontend/build/
+backend/static/
 
 # === Docker ===
 *.pid
