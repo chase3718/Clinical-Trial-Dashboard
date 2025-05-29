@@ -44,11 +44,11 @@ function App() {
 		}
 	}, []);
 
-	const deleteFile = useCallback(async () => {
+	const deleteFile = async () => {
 		if (selectedFileId === '') return;
 		await fetch(`api/files/delete/${selectedFileId}`);
 		setSelectedFileId('');
-	}, [selectedFileId]);
+	};
 
 	useEffect(() => {
 		fetchFiles();
