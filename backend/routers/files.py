@@ -1,5 +1,5 @@
 import os
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from models.database import SessionLocal
 from models.file_record import FileRecord
@@ -82,6 +82,23 @@ def get_file_data(file_id: int, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error parsing file: {e}")
     return {"id": record.id, "filename": record.displayname, "data": df.to_dict(orient="records")}
+
+
+@router.get("/delete/{file_id}" )
+def delete_file(file_id: int, db: Session = Depends(get_db)):
+    record = db.query(FileRecord).filter(FileRecord.id == file_id).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="File not found")
+
+    file_path = UPLOAD_DIR / record.filename
+    try:
+        file_path.unlink(missing_ok=True)  # Python 3.8+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Could not delete file from disk: {e}")
+
+    db.delete(record)
+    db.commit()
+    return {"message": "File deleted successfully"}
 
 @router.get("/ping")
 async def ping():

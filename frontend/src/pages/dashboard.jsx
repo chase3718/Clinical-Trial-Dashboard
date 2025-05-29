@@ -182,12 +182,12 @@ export default function Dashboard({ data }) {
 				</ResponsiveGridLayout>
 			</div>
 			<SpeedDial addWidget={addWidget} />
-			<button
+			{/* <button
 				className="fixed bottom-8 left-8 z-50 flex flex-col items-end space-y-2"
 				onClick={() => console.log(widgets)}
 			>
 				Print Conf
-			</button>
+			</button> */}
 		</div>
 	);
 }

@@ -9,6 +9,9 @@ npm install
 npm run build
 cd ..
 
+mkdir -p backend/static
+cp -r frontend/dist/* backend/static/
+
 echo "🚀 Starting FastAPI backend with uvicorn..."
 cd backend
 # Create a virtual environment if it doesn't exist

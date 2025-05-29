@@ -5,7 +5,7 @@ import FullscreenDropzone from './components/fullscreenDropzone';
 import DataTable from './pages/clinicalDataTable';
 import DATA from './temp/data.js';
 import { useState, useEffect, useCallback } from 'react';
-import { FaChartBar, FaTable } from 'react-icons/fa';
+import { FaChartBar, FaTable, FaTrash } from 'react-icons/fa';
 
 function App() {
 	const [data, setData] = useState([]);
@@ -43,14 +43,23 @@ function App() {
 		}
 	}, []);
 
+	const deleteFile = useCallback(async () => {
+		if (selectedFileId === '') return;
+		await fetch(`api/files/delete/${selectedFileId}`);
+		setSelectedFileId('');
+	}, [selectedFileId]);
+
 	useEffect(() => {
 		fetchFiles();
 	}, [fetchFiles, data]);
 
 	// When the selected file changes, fetch its data
 	useEffect(() => {
-		if (selectedFileId) {
+		if (selectedFileId !== '') {
 			fetchFileData(selectedFileId);
+		} else {
+			setSelectedFileId('');
+			setData([]);
 		}
 	}, [selectedFileId, fetchFileData]);
 
@@ -94,6 +103,9 @@ function App() {
 							</option>
 						))}
 					</select>
+					<button className="btn btn-circle btn-error shadow-md transition-all duration-150">
+						<FaTrash onClick={deleteFile} />
+					</button>
 				</div>
 			</div>
 		</FullscreenDropzone>

@@ -18,6 +18,7 @@ import {
 } from './renderers';
 import ChartSkeleton from './chartSkeleton';
 import WidgetConfigEditor from './widgetConfigEditor';
+import { ResponsiveContainer } from 'recharts';
 
 const RENDERERS = {
 	pie: PieRenderer,
@@ -58,7 +59,9 @@ export default function Widget({ widget, data, onUpdate, onDelete }) {
 			return <ChartSkeleton widgetType={widgetType} />;
 		}
 		const Renderer = RENDERERS[widgetType];
-		if (!Renderer) return <ChartSkeleton />;
+		if (!Renderer || !data.length) {
+			if (config.widgetType !== 'text') return <ChartSkeleton chartType={widgetType} />;
+		}
 
 		switch (widgetType) {
 			case 'pie':
