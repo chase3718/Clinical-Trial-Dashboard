@@ -6,6 +6,7 @@ import DataTable from './pages/clinicalDataTable';
 import DATA from './temp/data.js';
 import { useState, useEffect, useCallback } from 'react';
 import { FaChartBar, FaTable, FaTrash } from 'react-icons/fa';
+import UploadButton from './components/uploadButton.jsx';
 
 function App() {
 	const [data, setData] = useState([]);
@@ -65,7 +66,7 @@ function App() {
 
 	return (
 		<FullscreenDropzone setData={setData} setSelectedFileId={selectedFileId}>
-			<div className="flex h-screen w-screen flex-row overflow-hidden bg-base-100">
+			<div className="flex h-screen w-screen flex-row overflow-hidden y-overflow-hidden bg-base-100">
 				{/* <Sidebar /> */}
 				{page === 'dashboard' && <Dashboard data={data} availableFiles={availableFiles} refreshFiles={fetchFiles} />}
 				{page === 'table' && <DataTable data={data} availableFiles={availableFiles} refreshFiles={fetchFiles} />}
@@ -106,6 +107,9 @@ function App() {
 					<button className="btn btn-circle btn-error shadow-md transition-all duration-150">
 						<FaTrash onClick={deleteFile} />
 					</button>
+					<UploadButton setData={setData}
+	setSelectedFileId={setSelectedFileId}
+	refreshFiles={fetchFiles} />
 				</div>
 			</div>
 		</FullscreenDropzone>

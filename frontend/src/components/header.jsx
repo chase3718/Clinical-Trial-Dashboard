@@ -1,5 +1,5 @@
 import { FaBars } from 'react-icons/fa';
-import FileUpload from './fileUpload';
+import FileUpload from './uploadButton';
 
 export default function Header() {
 	return (
