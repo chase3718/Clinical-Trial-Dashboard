@@ -24,7 +24,7 @@ if exist backend\static (
 )
 
 echo 📂 Copying built frontend files to backend static directory...
-copy frontend\dist\* backend\static\ /Y
+xcopy frontend\dist\* backend\static\ /s /e
 
 echo 🚀 Starting FastAPI backend with uvicorn...
 cd backend
