@@ -1,58 +1,30 @@
-@echo off
-REM Exit on error (not as strict as bash, but will stop on error)
-SETLOCAL
-
-REM Minimum required versions
-set MIN_PYTHON=3.9
-set MIN_NPM=7.0.0
-
-REM Check for Python
-where python >nul 2>nul
-if errorlevel 1 (
-    echo [ERROR] Python is not installed or not in PATH.
-    pause
-    goto :eof
-)
-
-REM Check for npm
-where npm >nul 2>nul
-if errorlevel 1 (
-    echo [ERROR] npm is not installed or not in PATH.
-    pause
-    goto :eof
-)
-
-REM Check Python version
-for /f "tokens=2 delims= " %%v in ('python --version 2^>^&1') do set PY_VER=%%v
-for /f "tokens=1,2 delims=." %%a in ("%PY_VER%") do (
-    set PY_MAJOR=%%a
-    set PY_MINOR=%%b
-)
-if %PY_MAJOR% LSS 3 (
-    echo [ERROR] Python version 3.9 or higher is required. Found: %PY_VER%
-    pause
-    goto :eof
-)
-if %PY_MAJOR%==3 if %PY_MINOR% LSS 9 (
-    echo [ERROR] Python version 3.9 or higher is required. Found: %PY_VER%
-    pause
-    goto :eof
-)
-
-REM Check npm version
-for /f "tokens=1 delims=." %%a in ('npm -v') do set NPM_MAJOR=%%a
-for /f "tokens=2 delims=." %%a in ('npm -v') do set NPM_MINOR=%%a
-if %NPM_MAJOR% LSS 7 (
-    echo [ERROR] npm version 7.0.0 or higher is required.
-    pause
-    goto :eof
-)
-
 echo 📦 Building frontend...
 cd frontend
 call npm install
+
+REM Properly remove the dist directory (Windows compatible)
+if exist dist (
+    echo Removing old dist directory...
+    rmdir /S /Q dist
+) else (
+    echo No old dist directory found.
+)
+
 call npm run build
 cd ..
+
+if exist backend\static (
+    echo Static directory already exists. Deleting old static files...
+    rmdir /S /Q backend\static
+    echo Creating new static directory...
+    mkdir backend\static
+) else (
+    echo Creating static directory...
+    mkdir backend\static
+)
+
+echo 📂 Copying built frontend files to backend static directory...
+copy frontend\dist\* backend\static\ /Y
 
 echo 🚀 Starting FastAPI backend with uvicorn...
 cd backend
@@ -62,6 +34,7 @@ if not exist venv (
     echo Creating virtual environment...
     python -m venv venv
 )
+
 
 REM Activate the virtual environment and install dependencies
 echo Activating virtual environment...

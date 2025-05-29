@@ -257,7 +257,13 @@ export default function ClinicalDataTable({ data }) {
 
 	const columns = useMemo(
 		() => [
-			{ accessorKey: 'studyId', header: 'Study ID', size: 120, minSize: 80, maxSize: 180 },
+			{ accessorKey: 'studyId', header: 'Study ID', size: 120, minSize: 80, maxSize: 180, enableSorting: true,
+				sortingFn: (rowA, rowB) => {
+					const a = parseInt(rowA.original.studyId.substring(3, rowA.original.studyId.length));
+					const b = parseInt(rowB.original.studyId.substring(3, rowA.original.studyId.length));
+					return a === b ? 0 : a > b ? 1 : -1;
+				},
+			 },
 			{ accessorKey: 'title', header: 'Title', size: 240, minSize: 120, maxSize: 360 },
 			{
 				accessorKey: 'phase',
